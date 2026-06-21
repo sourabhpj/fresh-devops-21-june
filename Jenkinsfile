@@ -20,11 +20,12 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy to EKS') {
             steps {
-                sh 'docker stop my-nginx-container || true'
-                sh 'docker rm my-nginx-container || true'
-                sh 'docker run -d --name my-nginx-container -p 80:80 my-nginx-image'
+                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh 'kubectl apply -f k8s/service.yaml'
+                sh 'kubectl rollout restart deployment/my-nginx-deployment'
+             
             }
         }
     }
